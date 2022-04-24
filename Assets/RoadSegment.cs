@@ -98,7 +98,7 @@ public class RoadSegment : MonoBehaviour
             Gizmos.DrawLine(a, b);
         }
     }
-    OrientedPoint GetBezierPoint(float t)
+    public OrientedPoint GetBezierPoint(float t)
     {
         Vector3 p0 = GetPosition(0);
         Vector3 p3 =GetPosition(3);
