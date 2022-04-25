@@ -6,15 +6,31 @@ using System.Linq;
 [RequireComponent(typeof(MeshFilter))]
 public class RoadSegment : MonoBehaviour
 {
-    public Transform[] controlPoints =new Transform[4];
+   // public Transform[] controlPoints =new Transform[4];
 
+    [SerializeField]
+   public  Transform startPoint;
+    [SerializeField]
+    public Transform EndPoint;
     [SerializeField] Mesh2D shape2D;
     [Range(2,32)]
     [SerializeField] int edgeRingCount=8;
     [Range(0, 1)]
     [SerializeField] float tTest = 0;
 
-    Vector3 GetPosition(int i) => controlPoints[i].position;
+    Vector3 GetPosition(int i)
+    {
+        if (i == 0)
+            return startPoint.position;
+        if (i == 1)
+            return startPoint.TransformPoint(Vector3.forward * startPoint.localScale.z);
+        if (i == 2)
+            return EndPoint.TransformPoint(Vector3.back * EndPoint.localScale.z);
+        if (i == 3)
+            return EndPoint.position;
+
+        return default;
+    }
     Mesh mesh;
      void Awake()
     {
@@ -34,9 +50,11 @@ public class RoadSegment : MonoBehaviour
     {
         mesh.Clear();
         //vertixes
+        float uSpan =shape2D.CalcUspan();
         List<Vector3> verts = new List<Vector3>();
 
         List<Vector3> normals = new List<Vector3>();
+        List<Vector3> uvs = new List<Vector3>();
         for (int ring = 0; ring < edgeRingCount; ring++)
         {
             float t = ring / (edgeRingCount - 1f);
@@ -45,6 +63,7 @@ public class RoadSegment : MonoBehaviour
             {
                 verts.Add(op.LocalToWorld(shape2D.vertices[i].point));
                 normals.Add(op.LocalToWorld(shape2D.vertices[i].normal));
+                uvs.Add(new Vector2(shape2D.vertices[i].u, t * GetAprLength() / uSpan));
             }
         }
 
@@ -114,10 +133,32 @@ public class RoadSegment : MonoBehaviour
 
         Vector3 pos = Vector3.Lerp(d, e, t);
         Vector3 tangent = (e - d).normalized;
-        return new OrientedPoint(pos,tangent);
+
+        Vector3 up = Vector3.Lerp(startPoint.up, EndPoint.up, t).normalized;
+        Quaternion rot = Quaternion.LookRotation(tangent, up);
+        return new OrientedPoint(pos,rot);
 
     }
 
+    float GetAprLength(int precision=8)
+    {
+        Vector3[] points = new Vector3[precision];
+ 
+        for(int i=0;i<precision;++i)
+        {
+            float t = i / (precision - 1);
+            points[i] = GetBezierPoint(t).pos;
+        }
 
+        float dist = 0;
+        for (int i = 0; i < precision-1; ++i)
+        {
+            Vector3 a = points[i];
+            Vector3 b = points[i + 1];
+            dist += Vector3.Distance(a, b);
+        }
+
+        return dist;
+    }
 
 }

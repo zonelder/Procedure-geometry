@@ -9,23 +9,28 @@ public class FlyToAboveRoad : MonoBehaviour
     [SerializeField]
     float timeSlower;
     [SerializeField]
-    RoadSegment road;
-
-    float t;
+    InfiniteRoad road;
+    [SerializeField]
+    float t = 0;
     // Start is called before the first frame update
     void Awake()
     {
-        t = 0;
+       // road.t = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        t += Time.deltaTime*timeSlower;
-        if (t >= 1)
+        t += Time.deltaTime * 0.2f;
+        //road.t += Time.deltaTime*timeSlower;
+        if (t < 1)
+        //road.t = 0;
+        {
+            OrientedPoint op = road.lastSeg.GetBezierPoint(t);
+            gameObject.transform.position = op.LocalToWorld(up);
+            gameObject.transform.rotation = op.rot;
+        }
+        else
             t = 0;
-        OrientedPoint op = road.GetBezierPoint(t);
-        gameObject.transform.position =op.LocalToWorld(up);
-        gameObject.transform.rotation = op.rot;
     }
 }
