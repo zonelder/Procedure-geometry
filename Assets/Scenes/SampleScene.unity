@@ -471,7 +471,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeSlower: 0.056
-  road: {fileID: 1521038606}
+  road: {fileID: 0}
   t: 0
 --- !u!1 &1521038605
 GameObject:
@@ -499,12 +499,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1521038605}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1554230904860148ac6cfc40dbe6ae7, type: 3}
+  m_Script: {fileID: 11500000, guid: a41350ef8e54ac0458962f8e4c4e135b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   SegmentPrefab: {fileID: 6564574806341899659, guid: 7093af5a102af09408e55946420fe76f, type: 3}
-  lastSeg: {fileID: 0}
-  t: 0
+  _camera: {fileID: 963194225}
 --- !u!4 &1521038607
 Transform:
   m_ObjectHideFlags: 0
